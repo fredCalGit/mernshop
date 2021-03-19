@@ -1,39 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { auth, googleAuthProvider } from "../../firebase.js";
-import { toast } from "react-toastify";
-import { Button } from "antd";
+import React, { useState, useEffect } from 'react';
+import { auth, googleAuthProvider } from '../../firebase.js';
+import { toast } from 'react-toastify';
+import { Button } from 'antd';
 import {
   GoogleOutlined,
   MailOutlined,
   LoadingOutlined,
-} from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+} from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { createOrUpdateUser } from "../../functions/auth";
-
-
+import { createOrUpdateUser } from '../../functions/auth';
 
 const Login = ({ history }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   let dispatch = useDispatch();
 
   const roleBasedRedirect = (res) => {
-    if(res.data.role === 'admin') {
-        history.push('/admin/dashboard')
+    let intended = history.location.state;
+    if (intended) {
+      history.push(intended.from);
     } else {
-        history.push('/user/history')
+      if (res.data.role === 'admin') {
+        history.push('/admin/dashboard');
+      } else {
+        history.push('/user/history');
+      }
     }
-}
+  };
 
   const { user } = useSelector((state) => ({ ...state }));
 
   useEffect(() => {
-    if (user && user.token) {
-      history.push("/");
+    let intended = history.location.state;
+    if (intended) {
+      return;
+    } else {
+      if (user && user.token) {
+        history.push('/');
+      }
     }
   }, [user, history]);
 
@@ -50,7 +58,7 @@ const Login = ({ history }) => {
       createOrUpdateUser(idTokenResult.token)
         .then((res) => {
           dispatch({
-            type: "LOGGED_IN_USER",
+            type: 'LOGGED_IN_USER',
             payload: {
               name: res.data.name,
               email: res.data.email,
@@ -62,8 +70,7 @@ const Login = ({ history }) => {
           roleBasedRedirect(res);
         })
         .catch((err) => console.log(err));
-        //history.push('/')
-        
+      //history.push('/')
     } catch (err) {
       console.log(err);
       toast.error(err.message);
@@ -79,7 +86,7 @@ const Login = ({ history }) => {
 
         createOrUpdateUser(idTokenResult.token).then((res) => {
           dispatch({
-            type: "LOGGED_IN_USER",
+            type: 'LOGGED_IN_USER',
             payload: {
               name: res.data.name,
               email: res.data.email,
@@ -88,11 +95,11 @@ const Login = ({ history }) => {
               _id: res.data._id,
             },
           });
-          roleBasedRedirect(res)
-        //   history.push("/");
+          roleBasedRedirect(res);
+          //   history.push("/");
         });
 
-        history.push("/");
+        history.push('/');
       })
       .catch((err) => {
         console.log(err);

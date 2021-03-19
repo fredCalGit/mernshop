@@ -28,6 +28,8 @@ import UserRoute from './components/routes/UserRoute';
 import AdminRoute from './components/routes/AdminRoute';
 import ProductUpdate from './pages/admin/product/ProductUpdate';
 import Product from './pages/Product';
+import CategoryHome from './pages/category/CategoryHome';
+import SubHome from './pages/sub/SubHome';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -87,6 +89,8 @@ const App = () => {
           component={ProductUpdate}
         />
         <Route path="/product/:slug" exact component={Product} />
+        <Route path="/category/:slug" exact component={CategoryHome} />
+        <Route path="/sub/:slug" exact component={SubHome} />
       </Switch>
     </>
   );
