@@ -1,82 +1,91 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react';
 import { Menu } from 'antd';
-import { LogoutOutlined,UserOutlined,UserAddOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
-import {Link, useHistory} from 'react-router-dom'
+import {
+  LogoutOutlined,
+  UserOutlined,
+  UserAddOutlined,
+  AppstoreOutlined,
+  SettingOutlined,
+  ShoppingOutlined,
+} from '@ant-design/icons';
+import { Link, useHistory } from 'react-router-dom';
 
-import firebase from 'firebase'
-import {useDispatch, useSelector} from 'react-redux'
-
+import firebase from 'firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import Search from '../forms/Search';
 
 const { SubMenu, Item } = Menu;
 
-
 const Header = () => {
+  const [current, setCurrent] = useState('home');
 
-    const [current, setCurrent] = useState('home')
-    
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    let user = useSelector(state => state.user)
-    
-    let history = useHistory()
+  let user = useSelector((state) => state.user);
 
-    const handleClick = (e) => {
-        setCurrent(e.key)
-    }
+  let history = useHistory();
 
-    const logout = () => {
-        firebase.auth().signOut()
-        dispatch({
-            type: 'LOGOUT',
-            payload: null
-        })
-    history.push('/login')
-    }
-    return (
-        <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
-           <Item  key="home" icon={<AppstoreOutlined />}>
-                <Link to='/'>Home</Link>
+  const handleClick = (e) => {
+    setCurrent(e.key);
+  };
+
+  const logout = () => {
+    firebase.auth().signOut();
+    dispatch({
+      type: 'LOGOUT',
+      payload: null,
+    });
+    history.push('/login');
+  };
+  return (
+    <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+      <Item key="home" icon={<AppstoreOutlined />}>
+        <Link to="/">Home</Link>
+      </Item>
+      <Item key="shop" icon={<ShoppingOutlined />}>
+        <Link to="/shop">Shop</Link>
+      </Item>
+
+      {!user && (
+        <Item className="float-right" key="register" icon={<UserAddOutlined />}>
+          <Link to="/register">Sign Up</Link>
+        </Item>
+      )}
+
+      {!user && (
+        <Item className="float-right" key="login" icon={<UserOutlined />}>
+          <Link to="/login">Sign In</Link>
+        </Item>
+      )}
+
+      {user && (
+        <SubMenu
+          className="float-right"
+          icon={<SettingOutlined />}
+          title={user.email && user.email.split('@')[0]}
+        >
+          {user && user.role === 'subscriber' && (
+            <Item key="setting:1">
+              <Link to="/user/history">Dashboard</Link>
             </Item>
-
-
-           {!user && (
-            <Item className="float-right" key="register" icon={<UserAddOutlined />}>
-                <Link to="/register">Sign Up</Link>
+          )}
+          {user && user.role === 'admin' && (
+            <Item key="setting:1">
+              <Link to="/admin/dashboard">Dashboard</Link>
             </Item>
-           )}
-           
-            {!user && (
-                <Item className="float-right" key="login" icon={<UserOutlined />}>
-                <Link to="/login">Sign In</Link>
-            </Item>
+          )}
 
-            )}
-            
-            {user && (
-                <SubMenu 
-                className="float-right" 
-                icon={<SettingOutlined />} 
-                title={user.email && user.email.split('@')[0]}
-                >
-          
-                    {user && user.role === 'subscriber' && <Item key="setting:1"><Link to='/user/history'>Dashboard</Link></Item>}
-                    {user && user.role === 'admin' && <Item key="setting:1"><Link to='/admin/dashboard'>Dashboard</Link></Item>}
-                    
-                    <Item icon={<LogoutOutlined />} onClick={logout}>Sign Out</Item>
-          
-          
+          <Item icon={<LogoutOutlined />} onClick={logout}>
+            Sign Out
+          </Item>
         </SubMenu>
-            )}
-           
+      )}
 
-            
+      <span className="float-right p-1">
+        <Search />
+      </span>
+    </Menu>
+  );
+};
 
-            
-
-        
-        
-      </Menu>
-    )
-}
-
-export default Header
+export default Header;
