@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getSubs } from '../../functions/sub';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { getSubs } from "../../functions/sub";
 
 const SubList = () => {
   const [subs, setSubs] = useState([]);
@@ -8,8 +8,8 @@ const SubList = () => {
 
   useEffect(() => {
     setLoading(true);
-    getSubs().then((s) => {
-      setSubs(s.data);
+    getSubs().then((res) => {
+      setSubs(res.data);
       setLoading(false);
     });
   }, []);

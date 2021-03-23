@@ -1,18 +1,25 @@
-import React from "react"
-import {Select} from 'antd'
+import React from "react";
+import { Select } from "antd";
 
-const {Option} = Select
+const { Option } = Select;
 
-
-const ProductUpdateForm = ({ 
-    handleSubmit, handleChange,   categories,
-    subOptions,values,arrayOfSubs, selectedCategory, setArrayOfSubs, handleCategoryChange,setValues }) => {
+const ProductUpdateForm = ({
+  handleSubmit,
+  handleChange,
+  setValues,
+  values,
+  handleCategoryChange,
+  categories,
+  subOptions,
+  arrayOfSubs,
+  setArrayOfSubs,
+  selectedCategory,
+}) => {
   // destructure
   const {
     title,
     description,
     price,
-  
     category,
     subs,
     shipping,
@@ -62,12 +69,11 @@ const ProductUpdateForm = ({
       <div className="form-group">
         <label>Shipping</label>
         <select
-          value={shipping === 'Yes' ? 'Yes' : 'No'}
+          value={shipping === "Yes" ? "Yes" : "No"}
           name="shipping"
           className="form-control"
           onChange={handleChange}
         >
-          <option disabled>Please select</option>
           <option value="No">No</option>
           <option value="Yes">Yes</option>
         </select>
@@ -86,10 +92,12 @@ const ProductUpdateForm = ({
 
       <div className="form-group">
         <label>Color</label>
-        <select 
-        value={color}
-        name="color" className="form-control" onChange={handleChange}>
-          <option disabled>Please select</option>
+        <select
+          value={color}
+          name="color"
+          className="form-control"
+          onChange={handleChange}
+        >
           {colors.map((c) => (
             <option key={c} value={c}>
               {c}
@@ -100,10 +108,12 @@ const ProductUpdateForm = ({
 
       <div className="form-group">
         <label>Brand</label>
-        <select 
-        value={brand}
-        name="brand" className="form-control" onChange={handleChange}>
-          <option disabled>Please select</option>
+        <select
+          value={brand}
+          name="brand"
+          className="form-control"
+          onChange={handleChange}
+        >
           {brands.map((b) => (
             <option key={b} value={b}>
               {b}
@@ -111,6 +121,7 @@ const ProductUpdateForm = ({
           ))}
         </select>
       </div>
+
       <div className="form-group">
         <label>Category</label>
         <select
@@ -119,32 +130,34 @@ const ProductUpdateForm = ({
           onChange={handleCategoryChange}
           value={selectedCategory ? selectedCategory : category._id}
         >
-          
-
           {categories.length > 0 &&
-            categories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
+            categories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
               </option>
             ))}
         </select>
       </div>
+
       <div>
-                <label>Sub Categories</label>
-                <Select 
-                mode="multiple" 
-                style={{width: '100%'}} 
-                placeholder="Please select" 
-                value={arrayOfSubs}
-                onChange={value => setArrayOfSubs(value)}
-                >
-                    {subOptions.length && subOptions.map((s) => (
-                        <Option value={s._id} key={s._id}>{s.name}</Option>
-                    ))}
-                </Select>
-        </div>
-      
-        <br />
+        <label>Sub Categories</label>
+        <Select
+          mode="multiple"
+          style={{ width: "100%" }}
+          placeholder="Please select"
+          value={arrayOfSubs}
+          onChange={(value) => setArrayOfSubs(value)}
+        >
+          {subOptions.length &&
+            subOptions.map((s) => (
+              <Option key={s._id} value={s._id}>
+                {s.name}
+              </Option>
+            ))}
+        </Select>
+      </div>
+
+      <br />
       <button className="btn btn-outline-info">Save</button>
     </form>
   );

@@ -1,20 +1,14 @@
-import React from 'react'
-import Typewriter from 'typewriter-effect'
+import React from "react";
+import Typewriter from "typewriter-effect";
 
+const Jumbotron = ({ text }) => (
+  <Typewriter
+    options={{
+      strings: text,
+      autoStart: true,
+      loop: true,
+    }}
+  />
+);
 
-const Jumbotron = ({text}) => 
-  (
-    <Typewriter
-        options={{
-            strings: text,
-            autoStart: true,
-            loop: true
-
-        }}
-
-    />
- )
- 
-
-
-export default Jumbotron
+export default Jumbotron;

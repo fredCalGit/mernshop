@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { getProducts, getProductsCount } from '../../functions/product';
-import ProductCard from '../cards/ProductCard';
-import LoadingCard from '../cards/LoadingCard';
-import { Pagination } from 'antd';
+import React, { useEffect, useState } from "react";
+import { getProducts, getProductsCount } from "../../functions/product";
+import ProductCard from "../cards/ProductCard";
+import LoadingCard from "../cards/LoadingCard";
+import { Pagination } from "antd";
 
 const BestSellers = () => {
   const [products, setProducts] = useState([]);
@@ -21,7 +21,7 @@ const BestSellers = () => {
   const loadAllProducts = () => {
     setLoading(true);
     // sort, order, limit
-    getProducts('sold', 'desc', page).then((res) => {
+    getProducts("sold", "desc", page).then((res) => {
       setProducts(res.data);
       setLoading(false);
     });

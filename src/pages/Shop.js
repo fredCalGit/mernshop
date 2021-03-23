@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   getProductsByCount,
   fetchProductsByFilter,
-} from '../functions/product';
-import { getCategories } from '../functions/category';
-import { getSubs } from '../functions/sub';
-import { useSelector, useDispatch } from 'react-redux';
-import ProductCard from '../components/cards/ProductCard';
-import { Menu, Slider, Checkbox, Radio } from 'antd';
+} from "../functions/product";
+import { getCategories } from "../functions/category";
+import { getSubs } from "../functions/sub";
+import { useSelector, useDispatch } from "react-redux";
+import ProductCard from "../components/cards/ProductCard";
+import { Menu, Slider, Checkbox, Radio } from "antd";
 import {
   DollarOutlined,
   DownSquareOutlined,
   StarOutlined,
-} from '@ant-design/icons';
-import Star from '../components/forms/Star';
+} from "@ant-design/icons";
+import Star from "../components/forms/Star";
 
 const { SubMenu, ItemGroup } = Menu;
 
@@ -24,39 +24,32 @@ const Shop = () => {
   const [ok, setOk] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryIds, setCategoryIds] = useState([]);
-  const [star, setStar] = useState('');
+  const [star, setStar] = useState("");
   const [subs, setSubs] = useState([]);
-  const [sub, setSub] = useState('');
+  const [sub, setSub] = useState("");
   const [brands, setBrands] = useState([
-    'Apple',
-    'Samsung',
-    'Microsoft',
-    'Lenovo',
-    'ASUS',
-    'SanDisk',
-    'Seagate',
-    'WD',
-    'Acer',
-    'HP',
-    'Roku',
+    "Apple",
+    "Samsung",
+    "Microsoft",
+    "Lenovo",
+    "ASUS",
   ]);
-  const [brand, setBrand] = useState('');
+  const [brand, setBrand] = useState("");
   const [colors, setColors] = useState([
-    'Black',
-    'Brown',
-    'Silver',
-    'White',
-    'Blue',
+    "Black",
+    "Brown",
+    "Silver",
+    "White",
+    "Blue",
   ]);
-  const [color, setColor] = useState('');
-  const [shipping, setShipping] = useState('');
+  const [color, setColor] = useState("");
+  const [shipping, setShipping] = useState("");
 
   let dispatch = useDispatch();
-  let search = useSelector((state) => state.search);
+  let { search } = useSelector((state) => ({ ...state }));
   const { text } = search;
 
   useEffect(() => {
-    setLoading(true);
     loadAllProducts();
     // fetch categories
     getCategories().then((res) => setCategories(res.data));
@@ -72,42 +65,43 @@ const Shop = () => {
 
   // 1. load products by default on page load
   const loadAllProducts = () => {
-    getProductsByCount(12).then((res) => {
-      setProducts(res.data);
+    getProductsByCount(12).then((p) => {
+      setProducts(p.data);
       setLoading(false);
     });
   };
 
   // 2. load products on user search input
   useEffect(() => {
-    if (!text.trim()) return;
     const delayed = setTimeout(() => {
       fetchProducts({ query: text });
+      if (!text) {
+        loadAllProducts();
+      }
     }, 300);
     return () => clearTimeout(delayed);
   }, [text]);
 
   // 3. load products based on price range
   useEffect(() => {
-    if (!ok) return;
-    console.log('ok to request');
+    console.log("ok to request");
     fetchProducts({ price });
   }, [ok]);
 
   const handleSlider = (value) => {
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
 
     // reset
     setCategoryIds([]);
     setPrice(value);
-    setStar('');
-    setSub('');
-    setBrand('');
-    setColor('');
-    setShipping('');
+    setStar("");
+    setSub("");
+    setBrand("");
+    setColor("");
+    setShipping("");
     setTimeout(() => {
       setOk(!ok);
     }, 300);
@@ -135,15 +129,15 @@ const Shop = () => {
   const handleCheck = (e) => {
     // reset
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
     setPrice([0, 0]);
-    setStar('');
-    setSub('');
-    setBrand('');
-    setColor('');
-    setShipping('');
+    setStar("");
+    setSub("");
+    setBrand("");
+    setColor("");
+    setShipping("");
     // console.log(e.target.value);
     let inTheState = [...categoryIds];
     let justChecked = e.target.value;
@@ -166,16 +160,16 @@ const Shop = () => {
   const handleStarClick = (num) => {
     // console.log(num);
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
     setPrice([0, 0]);
     setCategoryIds([]);
     setStar(num);
-    setSub('');
-    setBrand('');
-    setColor('');
-    setShipping('');
+    setSub("");
+    setBrand("");
+    setColor("");
+    setShipping("");
     fetchProducts({ stars: num });
   };
 
@@ -196,7 +190,7 @@ const Shop = () => {
         key={s._id}
         onClick={() => handleSub(s)}
         className="p-1 m-1 badge badge-secondary"
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
       >
         {s.name}
       </div>
@@ -206,15 +200,15 @@ const Shop = () => {
     // console.log("SUB", sub);
     setSub(sub);
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
     setPrice([0, 0]);
     setCategoryIds([]);
-    setStar('');
-    setBrand('');
-    setColor('');
-    setShipping('');
+    setStar("");
+    setBrand("");
+    setColor("");
+    setShipping("");
     fetchProducts({ sub });
   };
 
@@ -233,17 +227,17 @@ const Shop = () => {
     ));
 
   const handleBrand = (e) => {
-    setSub('');
+    setSub("");
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
     setPrice([0, 0]);
     setCategoryIds([]);
-    setStar('');
-    setColor('');
+    setStar("");
+    setColor("");
     setBrand(e.target.value);
-    setShipping('');
+    setShipping("");
     fetchProducts({ brand: e.target.value });
   };
 
@@ -262,17 +256,17 @@ const Shop = () => {
     ));
 
   const handleColor = (e) => {
-    setSub('');
+    setSub("");
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
     setPrice([0, 0]);
     setCategoryIds([]);
-    setStar('');
-    setBrand('');
+    setStar("");
+    setBrand("");
     setColor(e.target.value);
-    setShipping('');
+    setShipping("");
     fetchProducts({ color: e.target.value });
   };
 
@@ -283,7 +277,7 @@ const Shop = () => {
         className="pb-2 pl-4 pr-4"
         onChange={handleShippingchange}
         value="Yes"
-        checked={shipping === 'Yes'}
+        checked={shipping === "Yes"}
       >
         Yes
       </Checkbox>
@@ -292,7 +286,7 @@ const Shop = () => {
         className="pb-2 pl-4 pr-4"
         onChange={handleShippingchange}
         value="No"
-        checked={shipping === 'No'}
+        checked={shipping === "No"}
       >
         No
       </Checkbox>
@@ -300,16 +294,16 @@ const Shop = () => {
   );
 
   const handleShippingchange = (e) => {
-    setSub('');
+    setSub("");
     dispatch({
-      type: 'SEARCH_QUERY',
-      payload: { text: '' },
+      type: "SEARCH_QUERY",
+      payload: { text: "" },
     });
     setPrice([0, 0]);
     setCategoryIds([]);
-    setStar('');
-    setBrand('');
-    setColor('');
+    setStar("");
+    setBrand("");
+    setColor("");
     setShipping(e.target.value);
     fetchProducts({ shipping: e.target.value });
   };
@@ -322,7 +316,7 @@ const Shop = () => {
           <hr />
 
           <Menu
-            defaultOpenKeys={['1', '2', '3', '4', '5', '6', '7']}
+            defaultOpenKeys={["1", "2", "3", "4", "5", "6", "7"]}
             mode="inline"
           >
             {/* price */}
@@ -355,7 +349,7 @@ const Shop = () => {
                 </span>
               }
             >
-              <div style={{ maringTop: '-10px' }}>{showCategories()}</div>
+              <div style={{ maringTop: "-10px" }}>{showCategories()}</div>
             </SubMenu>
 
             {/* stars */}
@@ -367,7 +361,7 @@ const Shop = () => {
                 </span>
               }
             >
-              <div style={{ maringTop: '-10px' }}>{showStars()}</div>
+              <div style={{ maringTop: "-10px" }}>{showStars()}</div>
             </SubMenu>
 
             {/* sub category */}
@@ -379,7 +373,7 @@ const Shop = () => {
                 </span>
               }
             >
-              <div style={{ maringTop: '-10px' }} className="pl-4 pr-4">
+              <div style={{ maringTop: "-10px" }} className="pl-4 pr-4">
                 {showSubs()}
               </div>
             </SubMenu>
@@ -393,7 +387,7 @@ const Shop = () => {
                 </span>
               }
             >
-              <div style={{ maringTop: '-10px' }} className="pr-5">
+              <div style={{ maringTop: "-10px" }} className="pr-5">
                 {showBrands()}
               </div>
             </SubMenu>
@@ -407,7 +401,7 @@ const Shop = () => {
                 </span>
               }
             >
-              <div style={{ maringTop: '-10px' }} className="pr-5">
+              <div style={{ maringTop: "-10px" }} className="pr-5">
                 {showColors()}
               </div>
             </SubMenu>
@@ -421,7 +415,7 @@ const Shop = () => {
                 </span>
               }
             >
-              <div style={{ maringTop: '-10px' }} className="pr-5">
+              <div style={{ maringTop: "-10px" }} className="pr-5">
                 {showShipping()}
               </div>
             </SubMenu>

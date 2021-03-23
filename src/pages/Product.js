@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { getProduct, productStar, getRelated } from '../functions/product';
-import SingleProduct from '../components/cards/SingleProduct';
-import { useSelector } from 'react-redux';
-import ProductCard from '../components/cards/ProductCard';
+import React, { useEffect, useState } from "react";
+import { getProduct, productStar } from "../functions/product";
+import SingleProduct from "../components/cards/SingleProduct";
+import { useSelector } from "react-redux";
+import { getRelated } from "../functions/product";
+import ProductCard from "../components/cards/ProductCard";
 
 const Product = ({ match }) => {
   const [product, setProduct] = useState({});
-  const [star, setStar] = useState(0);
-  const { slug } = match.params;
   const [related, setRelated] = useState([]);
+  const [star, setStar] = useState(0);
+  // redux
+  const { user } = useSelector((state) => ({ ...state }));
 
-  const user = useSelector((state) => state.user);
+  const { slug } = match.params;
 
   useEffect(() => {
     loadSingleProduct();
@@ -19,31 +21,27 @@ const Product = ({ match }) => {
   useEffect(() => {
     if (product.ratings && user) {
       let existingRatingObject = product.ratings.find(
-        (elem) => elem.postedBy.toString() === user._id.toString()
+        (ele) => ele.postedBy.toString() === user._id.toString()
       );
-      existingRatingObject && setStar(existingRatingObject.star); //currente user's stars
+      existingRatingObject && setStar(existingRatingObject.star); // current user's star
     }
   });
 
   const loadSingleProduct = () => {
     getProduct(slug).then((res) => {
       setProduct(res.data);
-      //load related products
+      // load related
       getRelated(res.data._id).then((res) => setRelated(res.data));
     });
   };
 
   const onStarClick = (newRating, name) => {
     setStar(newRating);
-    // console.table(newRating, name);
-    productStar(name, newRating, user.token)
-      .then((res) => {
-        console.log(res.data);
-        loadSingleProduct(); //updates rating in real time
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.table(newRating, name);
+    productStar(name, newRating, user.token).then((res) => {
+      console.log("rating clicked", res.data);
+      loadSingleProduct(); // if you want to show updated rating in real time
+    });
   };
 
   return (
@@ -63,15 +61,16 @@ const Product = ({ match }) => {
           <hr />
         </div>
       </div>
+
       <div className="row pb-5">
         {related.length ? (
           related.map((r) => (
-            <div className="col-md-4" key={r._id}>
+            <div key={r._id} className="col-md-4">
               <ProductCard product={r} />
             </div>
           ))
         ) : (
-          <div className="text-center col">'No related products found'</div>
+          <div className="text-center col">No Products Found</div>
         )}
       </div>
     </div>
